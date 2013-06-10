@@ -48,16 +48,11 @@ class Dashboard(object):
                 username=self.username,
             ))
 
-    def report(self, report_type='traffic_usage', start=None, end=None,
-               host=None, result_type='csv', title=None, filename_filter=None):
+    def traffic_report(self, start=None, end=None, host=None,
+                       result_type='csv', title=None, filename_filter=None):
 
         if not self.session:
             self.login()
-
-        if not report_type in ('traffic_usage', ):
-            raise ValueError('Wrong `report_type`: {report_type}'.format(
-                report_type=report_type
-            ))
 
         if not result_type in ('csv', ):
             raise ValueError('Wrong `result_type`: {result_type}'.format(
@@ -71,17 +66,15 @@ class Dashboard(object):
             end = start + timedelta(days=10)
 
         if not title:
-            title = {
-                'traffic_usage': 'Traffic usage from {start} to {end}',
-            }[report_type].format(
+            title = 'Traffic usage from {start} to {end}'.format(
                 start=start.strftime('%m/%d/%Y %H:%M'),
                 end=end.strftime('%m/%d/%Y %H:%M'),
             )
 
         params = {
             'cmd': 'reports',
+            'action': 'traffic_usage',
 
-            'action': report_type,
             'handler': result_type,
 
             'startMonth': start.strftime('%m'),
@@ -102,6 +95,55 @@ class Dashboard(object):
 
         if host:
             params['host'] = unicode(host)
+
+        response = self.session.post(self.DASHBOARD_BASE_URL, data=params)
+
+        return response.content
+
+    def subdirectory_report(self, start=None, end=None,
+                            result_type='csv', title=None, directory_filter=None):
+
+        if not self.session:
+            self.login()
+
+        if not result_type in ('csv', ):
+            raise ValueError('Wrong `result_type`: {result_type}'.format(
+                result_type=result_type
+            ))
+
+        if not start:
+            start = datetime.now()
+
+        if not end:
+            end = start + timedelta(days=10)
+
+        if not title:
+            title = 'Traffic usage from {start} to {end}'.format(
+                start=start.strftime('%m/%d/%Y %H:%M'),
+                end=end.strftime('%m/%d/%Y %H:%M'),
+            )
+
+        params = {
+            'cmd': 'reports',
+            'action': 'subdir',
+
+            'handler': result_type,
+
+            'startMonth': start.strftime('%m'),
+            'startDay': start.strftime('%d'),
+            'startYear': start.strftime('%Y'),
+
+            'endMonth': end.strftime('%m'),
+            'endDay': end.strftime('%d'),
+            'endYear': end.strftime('%Y'),
+
+            'directory_filter': directory_filter,
+
+            'reportTitle': title,
+        }
+
+        if directory_filter:
+            params['directory_filter'] = unicode(directory_filter)
 
         response = self.session.post(self.DASHBOARD_BASE_URL, data=params)
 
