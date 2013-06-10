@@ -44,7 +44,9 @@ class Dashboard(object):
         })
 
         if not self.login_test(response):
-            raise DashboardLoginError(self.username)
+            raise DashboardLoginError('Wrong credentials for "{username}"'.format(
+                username=self.username,
+            ))
 
     def report(self, report_type='traffic_usage', start=None, end=None, result_type='csv', title=None):
         if not self.session:
