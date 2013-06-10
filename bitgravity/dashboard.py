@@ -48,7 +48,9 @@ class Dashboard(object):
                 username=self.username,
             ))
 
-    def report(self, report_type='traffic_usage', start=None, end=None, result_type='csv', title=None):
+    def report(self, report_type='traffic_usage', start=None, end=None,
+               host=None, result_type='csv', title=None, filename_filter=None):
+
         if not self.session:
             self.login()
 
@@ -94,6 +96,12 @@ class Dashboard(object):
 
             'reportTitle': title,
         }
+
+        if filename_filter:
+            params['filename_filter'] = unicode(filename_filter)
+
+        if host:
+            params['host'] = unicode(host)
 
         response = self.session.post(self.DASHBOARD_BASE_URL, data=params)
 
