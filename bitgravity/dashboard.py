@@ -100,7 +100,7 @@ class Dashboard(object):
 
         return response.content
 
-    def subdirectory_report(self, start=None, end=None,
+    def subdirectory_report(self, start=None, end=None, host=None,
                             result_type='csv', title=None, directory_filter=None):
 
         if not self.session:
@@ -144,6 +144,9 @@ class Dashboard(object):
 
         if directory_filter:
             params['directory_filter'] = unicode(directory_filter)
+
+        if host:
+            params['host'] = unicode(host)
 
         response = self.session.post(self.DASHBOARD_BASE_URL, data=params)
 
