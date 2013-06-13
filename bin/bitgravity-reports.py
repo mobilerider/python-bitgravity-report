@@ -1,12 +1,7 @@
-# import argparse
-
-# parser = argparse.ArgumentParser(description='Process some integers.')
-# parser.add_argument(
-#     'integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
-# parser.add_argument(
-#     '--sum', dest='accumulate', action='store_const', const=sum, default=max, help='sum the integers (default: find the max)')
+#!/usr/bin/env python
 
 from datetime import datetime, timedelta
+from getpass import getpass
 
 from dateutil.parser import parse as parse_date
 
@@ -19,7 +14,7 @@ def parse_cmdline():
     parser.add_argument('report', metavar='REPORT', type=str, nargs=1, choices=['traffic_report', 'subdirectory_report', ], help='Report type')
 
     parser.add_argument('-u', '--username', dest='username', required=True, metavar='USERNAME', action='store', help='User name to login')
-    parser.add_argument('-p', '--password', dest='password', required=False, metavar='PASSWORD', action='store', help='Password to login')
+    parser.add_argument('-p', '--password', dest='password', nargs='?', metavar='PASSWORD', action='store', help='Password to login')
 
     parser.add_argument('--start-datetime', dest='start_datetime', metavar='DATE', action='store', help='Start date for report data')
     parser.add_argument('--end-datetime', dest='end_datetime', metavar='DATE', action='store', help='End date for report data')
@@ -33,6 +28,9 @@ def parse_cmdline():
 
 if __name__ == '__main__':
     args = parse_cmdline()
+
+    if args.password is None:
+        args.password = getpass()
 
     dashboard = Dashboard(args.username, args.password, eager_login=True)
 

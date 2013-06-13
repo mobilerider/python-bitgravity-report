@@ -14,10 +14,11 @@ def filecontent_from_pkg(filepath):
 
 setup(
     name='bitgravity',
-    version='0.1dev',
+    version='0.2dev',
     author='Armando Perez Marques',
     author_email='gmandx@gmail.com',
     packages=['bitgravity', ],
+    scripts=['bin/bitgravity-reports.py', ],
     license='Creative Commons Attribution-Noncommercial-Share Alike license',
     long_description=filecontent_from_pkg('README.txt'),
     install_requires=[l for l in filecontent_from_pkg('requirements.txt').splitlines() if l.strip()],
